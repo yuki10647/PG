@@ -1,0 +1,89 @@
+#必要モジュールのインポート
+import numpy as np
+import pandas as pd
+import seaborn as sns 
+import matplotlib 
+import matplotlib.pyplot as plt 
+from scipy.stats import skew
+from scipy.stats.stats import pearsonr 
+%config InlineBackend.figure_formats = {'png', 'retina'} #matplotlib関連
+%matplotlib inline
+import os
+for dirname, _, filenames in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+
+#ファイルのダウンロード
+train = pd.read_csv("TrainOfHouse.csv")
+test = pd.read_csv("TestOfHouse.csv")
+
+#trainデータの閲覧
+#train.head()
+#testデータの閲覧
+#test.head()
+
+#データの結合
+#データ閲覧後のほうが範囲がわかりやすい
+all_data = pd.concat((train.loc[:,'MSSubClass':'SaleCondition'],
+                      test.loc[:,'MSSubClass':'SaleCondition']))
+#結合データの閲覧
+#all_data
+
+#グラフ化
+matplotlib.rcParams['figure.figsize'] = (12.0, 6.0)  #rcParamsはmatplotlibの設定
+prices = pd.DataFrame({"price":train["SalePrice"], "log(price + 1)":np.log1p(train["SalePrice"])})  #正規化(左に偏っているから)
+prices.hist()
+
+train["SalePrice"] = np.log1p(train["SalePrice"])
+#特徴量
+numeric_feats = all_data.dtypes[all_data.dtypes != "object"].index  #objectじゃないやつ
+skewed_feats = train[numeric_feats].apply(lambda x: skew(x.dropna())) #skewはscipy.statsの関数、歪度(Skewness)と尖度(Kurtosis) 
+skewed_feats = skewed_feats[skewed_feats > 0.75]
+skewed_feats = skewed_feats.index
+all_data[skewed_feats] = np.log1p(all_data[skewed_feats])  #正規化
+
+#ダミー作成
+all_data = pd.get_dummies(all_data)
+
+#null値を埋める
+all_data = all_data.fillna(all_data.mean())
+
+#確認用
+#all_data[:train.shape[0]]
+#all_data[train.shape[0]:] 
+
+#分割
+X_train = all_data[:train.shape[0]]
+X_test = all_data[train.shape[0]:] 
+y = train.SalePrice
+
+#解析
+from sklearn.linear_model import Ridge, RidgeCV, ElasticNet, LassoCV, LassoLarsCV
+from sklearn.model_selection import cross_val_score 
+from sklearn.ensemble import RandomForestRegressor
+#RMSE値の導出関数
+def rmse_cv(model):
+    rmse = np.sqrt(-cross_val_score(model, X_train, y, scoring="neg_mean_squared_error", cv = 10))
+    return rmse
+    
+#解析
+estimators = [1, 2, 5, 8, 15, 25, 50, 100]
+cv_rforest = [rmse_cv(RandomForestRegressor(n_estimators=n).fit(X_train, y)).mean() for n in estimators]  
+#バギングに用いる決定木の個数を指定
+cv_rforest = pd.Series(cv_rforest, index=estimators)
+cv_rforest.plot(title = "Validation")
+
+n_features = [1, 2, 5, 8, 15, 25, 50, 100]
+cv_rforest = [rmse_cv(RandomForestRegressor(max_features=n).fit(X_train, y)).mean() for n in n_features]
+#最適な分割をするために考慮するフィーチャーの数を指定
+cv_rforest = pd.Series(cv_rforest, index=estimators)
+cv_rforest.plot(title = "Validation")
+
+model_rforest = RandomForestRegressor(max_features=2)
+model_rforest.fit(X_train, y)
+model_rforest.score(X_train, y)
+
+predictions = np.expm1(model_rforest.predict(X_test)) #正規化を戻す
+
+submission = pd.DataFrame({"Id":test.Id, "SalePrice": predictions})
+submission.to_csv('submission.csv', index=False)

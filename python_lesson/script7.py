@@ -1,5 +1,5 @@
+#7-B
 import itertools
-
 for i in range(10000):
     n, x = map(int,input().split())
     if n == 0 and x == 0 :

@@ -1,3 +1,4 @@
+#8-B
 for i in range(10000):
     x = input()
     sum = 0
@@ -6,8 +7,7 @@ for i in range(10000):
     for d in x:
         sum += int(d)
     print(sum)
-
-
+#8-C
 import sys
 p = sys.stdin.readlines()
 l = ""
@@ -17,9 +17,7 @@ l = l.lower()
 for i in "abcdefghijklmnopqrstuvwxyz":
     count = l.count(i)
     print(f"{i} : {count}")
-
-
-
+#8-D
 s = input()
 p = input()
 ss = s * 2

@@ -1,3 +1,4 @@
+#11-A
 class dice:
     def __init__(self, label):
         self.a, self.b, self.c, self.d, self.e, self.f = label
@@ -19,7 +20,7 @@ for op in oplist:
     d.play(op)
 d.pri()
 
-
+#11-C
 class dice:
     def __init__(self, label):
         self.a, self.b, self.c, self.d, self.e, self.f = label
@@ -41,18 +42,17 @@ for op in 'EEESEEESEEENEEENEEESEEEN':
     if dice_base.li() == label2:
         print("Yes")
         break
-    else:
-        dice_base.play(op)
+    dice_base.play(op)
 else:
     print("No")
 
-
+#11-D
 class dice:
     def __init__(self, label):
         self.a, self.b, self.c, self.d, self.e, self.f = label
     def play(self, op):
         if op == "N":
-            self.a, self.b, self.e, self.f = self.b, self.f, self.a, self.e
+            self.a, self.b, self.e, self.f = self.b, self.a, self.f, self.e
         elif op == "S":
             self.a, self.b, self.e, self.f = self.e, self.a, self.f, self.b
         elif op == "E":
@@ -62,7 +62,7 @@ class dice:
     def li(self):
         return [self.a, self.b, self.c, self.d, self.e, self.f]
     def com(self, label):
-        for op in 'EEESEEESEEENEEENEEESEEEN':
+        for op in 'EEESEEESEEENEEENEEESEEE':
             if self.li() == label:
                 return True
             self.play(op)
@@ -77,7 +77,7 @@ for i in range(n):
         if d.com(label):
             break
     else:
-        L.append(d)
+        L.append(dice(label))
         continue
     print("No")
     break

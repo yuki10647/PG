@@ -1,14 +1,15 @@
+#1-A
 print('Hello World')
-
+#1-B
 va1 = input()
 x = int(va1)
 print(x**3)
-
-val = input('separated by space:')
+#1-C
+val = input()
 a, b = [int(i) for i in val.split()]
 print(a * b, a * 2 + b * 2)
-
-val = input('Enter sec:')
+#1-D
+val = input()
 a = int(val)
 b = a // 3600
 c = a - b * 3600

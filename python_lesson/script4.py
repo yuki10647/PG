@@ -1,3 +1,4 @@
+#4-A
 def cal(a, b):
     d = a // b
     r = a % b
@@ -6,7 +7,7 @@ def cal(a, b):
 n, m = map(int,input().split())
 d, r, f = cal(n, m)
 print(f"{d} {r} {f:.5f}")
-
+#4-B
 import math
 def circle(r):
     area = r * r * math.pi
@@ -15,7 +16,7 @@ def circle(r):
 r = float(input())
 area, around = circle(r)
 print(f"{area:.6f} {around:.6f}")
-
+#4-C
 def cal(a, op, b):
     a = int(a)
     b = int(b)
@@ -36,7 +37,7 @@ for i in range(10000):
     else:
         r = cal(a, op, b)
     print(r)
-
+#4-D
 def l(n):
     list = [int(i) for i in input().split()]
     return list

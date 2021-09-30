@@ -1,3 +1,7 @@
+#AOJ.Lesson-ITP1
+#https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/all
+
+
 #1-A
 print('Hello World')
 #1-B

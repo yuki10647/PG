@@ -1,3 +1,6 @@
+#8-A
+str = input()
+print(str.swapcase())
 #8-B
 for i in range(10000):
     x = input()
